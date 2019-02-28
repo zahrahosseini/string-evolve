@@ -259,7 +259,7 @@ def generateNewPopulation(population, populationFitnessScores,uniformCrossOver):
 
 
 def mutate(population, numberOfMutation):
-    print("^^^^",numberOfMutation)
+    # print("^^^^",numberOfMutation)
     for _ in range(numberOfMutation):
         i=randint(0, genomeLength - 1)
         j=randint(0, populationSize - 1)
@@ -284,7 +284,7 @@ def mutate(population, numberOfMutation):
 
 
 def evolve(population,fitnessOption, tournomentSelection,mutationenabled,mutationRate,mrate,numberOfMutation,
-           initialPopulationSize, populationSize, newChildSize,uniformCrossOver):
+           initialPopulationSize, populationSize, newChildSize,uniformCrossOver,debug):
 
     numberOfGenerations = 1
 
@@ -303,11 +303,11 @@ def evolve(population,fitnessOption, tournomentSelection,mutationenabled,mutatio
             similarityToTargetString=0
     else:
         similarityToTargetString = (populationFitnessScores[indexOfMostFitMember] / genomeLength)
-
-    print('Generations elapsed:           ' + str(numberOfGenerations) + '===========================================================')
-    print('Current most fit member:       ' + ''.join(mostFitMember))
-    print('Percent similarity to target:  ' + str(round(similarityToTargetString, 4) * 100) + '%')
-    print('\n\n\n')
+    if debug==1:
+        print('Generations elapsed:           ' + str(numberOfGenerations) + '===========================================================')
+        print('Current most fit member:       ' + ''.join(mostFitMember))
+        print('Percent similarity to target:  ' + str(round(similarityToTargetString, 4) * 100) + '%')
+        print('\n\n\n')
 
     while numberOfGenerations < stopAfterThisManyGenerations:
 
@@ -316,33 +316,33 @@ def evolve(population,fitnessOption, tournomentSelection,mutationenabled,mutatio
             population.sort(key=individualFitnessTestWithORD, reverse=False)
         else:
             population.sort(key=individualFitnessTest, reverse=False)
-        for j in range(populationSize):
-            if fitnessOption==0:
-                print(population[j], individualFitnessTestWithORD(population[j]))
-            else:
-                print (population[j], individualFitnessTest(population[j]))
-        print ("_____First part_________")
+        if debug == 1:
+            for j in range(populationSize):
+                if fitnessOption==0:
+                    print(population[j], individualFitnessTestWithORD(population[j]))
+                else:
+                    print (population[j], individualFitnessTest(population[j]))
+        # print ("_____First part_________")
         top8=population[:8]
-        for j in range(8):
-            if fitnessOption==0:
-                print(top8[j], individualFitnessTestWithORD(top8[j]))
-            else:
-                print (top8[j], individualFitnessTest(top8[j]))
+        if debug==1:
+            for j in range(8):
+                if fitnessOption==0:
+                    print(top8[j], individualFitnessTestWithORD(top8[j]))
+                else:
+                    print (top8[j], individualFitnessTest(top8[j]))
         populationFitnessScores = populationFitnessTest(population,fitnessOption)
-        # if fitnessOption==0:
         indexOfMostFitMember = populationFitnessScores.index(min((populationFitnessScores)))
-        # else:
-        #     indexOfMostFitMember = populationFitnessScores.index(min((populationFitnessScores)))
         mostFitMember = population[indexOfMostFitMember]
 
         similarityToTargetString = (populationFitnessScores[indexOfMostFitMember] / genomeLength)
 
         if mostFitMember == targetString:
-            print('The number of generations elapsed was ' + str(numberOfGenerations))
+            if debug==1:
+                print('The number of generations elapsed was ' + str(numberOfGenerations))
             populationOutputFile.write('\n\n\n'.join(population))
             populationOutputFile.close()
             return ((mostFitMember)),population,numberOfGenerations
-        print ("______After newPop________")
+        # print ("______After newPop________")
         if tournomentSelection==0:
             population = generateNewPopulation(population, populationFitnessScores,uniformCrossOver)
         else:
@@ -351,28 +351,29 @@ def evolve(population,fitnessOption, tournomentSelection,mutationenabled,mutatio
             population.sort(key=individualFitnessTestWithORD, reverse=False)
         else:
             population.sort(key=individualFitnessTest, reverse=False)
-        for j in range(populationSize):
-            if fitnessOption == 0:
-                print (population[j], individualFitnessTestWithORD(population[j]))
-            else:
-                print (population[j], individualFitnessTest(population[j]))
-        print("-----------Mutate----------")
+        if debug==1:
+            for j in range(populationSize):
+                if fitnessOption == 0:
+                    print (population[j], individualFitnessTestWithORD(population[j]))
+                else:
+                    print (population[j], individualFitnessTest(population[j]))
+        # print("-----------Mutate----------")
         if mutationenabled==0:
             population=mutate(population, numberOfMutation)
         else:
             mutationRate*=mrate
             numberOfMutation = int(round(mutationRate * genomeLength * populationSize))
             population = mutate(population, numberOfMutation)
-        # print (len(population))
         if fitnessOption == 0:
             population.sort(key=individualFitnessTestWithORD, reverse=False)
         else:
             population.sort(key=individualFitnessTest, reverse=False)
-        for jj in range(populationSize):
-            if fitnessOption == 0:
-                print ("****",population[jj], individualFitnessTestWithORD(population[jj]))
-            else:
-                print ("****",population[jj], individualFitnessTest(population[jj]))
+        if debug==1:
+            for jj in range(populationSize):
+                if fitnessOption == 0:
+                    print ("****",population[jj], individualFitnessTestWithORD(population[jj]))
+                else:
+                    print ("****",population[jj], individualFitnessTest(population[jj]))
         numberOfGenerations = numberOfGenerations + 1
 
 
@@ -411,11 +412,11 @@ fitnessFunctionOption=[0,1]
 tournomentSelectionOption=[0,1]
 mutationenabledOption=[0,1]
 uniformCrossOverOption=[0,1]
-initialPopulationSizeOption=[16,32,64,128,256,512,1024]
-mrateOptions=[0.9999,0.999,0.99,1,1.00001,1.0001,1.001]
+initialPopulationSizeOption=[16,32,512]
+mrateOptions=[0.9999,0.999,1,1.00001]
 mutationRate = 0.07
-mutationRateOptions=[0.03,0.04,0.05,0.06,0.07]
-
+mutationRateOptions=[0.02,0.03,0.04]
+debug=0
 for fitnessFunctionindex in range(len(fitnessFunctionOption)):
     for tournomentSelectionindex in range(len(tournomentSelectionOption)):
         for uniformCrossOverindex in range(len(uniformCrossOverOption)):
@@ -457,7 +458,7 @@ for fitnessFunctionindex in range(len(fitnessFunctionOption)):
                                                                                                 initialPopulationSize,
                                                                                                 populationSize,
                                                                                                 newChildSize,
-                                                                                                uniformCrossOver)
+                                                                                                uniformCrossOver,debug)
                                     timeTaken = str(round(default_timer() - startTime, 3))
                                     ttime.append(timeTaken)
                                     generation.append(generationNumber)
@@ -536,7 +537,7 @@ for fitnessFunctionindex in range(len(fitnessFunctionOption)):
                                                                                             initialPopulationSize,
                                                                                             populationSize,
                                                                                             newChildSize,
-                                                                                            uniformCrossOver)
+                                                                                            uniformCrossOver,debug)
                                 timeTaken = str(round(default_timer() - startTime, 3))
                                 ttime.append(timeTaken)
                                 generation.append(generationNumber)

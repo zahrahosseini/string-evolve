@@ -409,15 +409,15 @@ uniformCrossOver=0
 initialPopulationSize = 32
 mrate=0.99
 fitnessFunctionOption=[0,1]
-tournomentSelectionOption=[0]#,1]
-mutationenabledOption=[0]#,1]
-uniformCrossOverOption=[0]#,1]
+tournomentSelectionOption=[0,1]
+mutationenabledOption=[0,1]
+uniformCrossOverOption=[0,1]
 tournamentSizeOption = [4,5,6]
 
-initialPopulationSizeOption=[32]#16,32,512]
-mrateOptions=[1]#[0.9999,0.999,1,1.00001]
-mutationRate = 0.07
-mutationRateOptions=[0.03]#0.02,0.03,0.04]
+initialPopulationSizeOption=[16,32,512]
+mrateOptions=[0.9999,1,1.00001]
+mutationRate = 0.03
+mutationRateOptions=[0.02,0.03,0.04]
 debug=0
 for fitnessFunctionindex in range(len(fitnessFunctionOption)):
     for tournomentSelectionindex in range(len(tournomentSelectionOption)):

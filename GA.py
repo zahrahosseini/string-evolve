@@ -149,7 +149,7 @@ def generateChild(population, populationFitnessScores,initialPopulationSize,unif
     secondParent = list(selectParent(population, populationFitnessScores,initialPopulationSize,tournamentSize))
 
     while firstParent == secondParent:
-        secondParent = list(selectParent(population, populationFitnessScores,initialPopulationSize))
+        secondParent = list(selectParent(population, populationFitnessScores,initialPopulationSize,tournamentSize))
 
     child = copy.copy(secondParent)
     if (uniformCrossOver == 1):
@@ -400,7 +400,7 @@ ttime=[]
 generation=[]
 AllScores=[]
 bestScores=[]
-iterationCount=50
+iterationCount=10
 
 fitnessFunction=0
 tournomentSelection=0
@@ -413,7 +413,7 @@ tournomentSelectionOption=[0,1]
 mutationenabledOption=[0,1]
 uniformCrossOverOption=[0,1]
 tournamentSizeOption = [4,5,6]
-
+tournamentSize=5
 initialPopulationSizeOption=[16,32,512]
 mrateOptions=[0.9999,1,1.00001]
 mutationRate = 0.03
@@ -481,25 +481,25 @@ for fitnessFunctionindex in range(len(fitnessFunctionOption)):
                                         timeFilename = "time" + "Fitness" + str(fitnessFunction) + "TournomentSelection" + str(
                                             tournomentSelection) + \
                                                        "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                            mutationRate) + "mrate" + str(mrate) + "UniformCrossOver" + str(
+                                            mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+ "UniformCrossOver" + str(
                                             uniformCrossOver) + "populationSize" + \
                                                        str(populationSize) + ".csv"
                                         scoreFilename = "score" + "Fitness" + str(
                                             fitnessFunction) + "TournomentSelection" + str(tournomentSelection) + \
                                                         "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                            mutationRate) + "mrate" + str(mrate) + "UniformCrossOver" + str(
+                                            mutationRate) + "mrate" + str(mrate)+"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
                                             uniformCrossOver) + "populationSize" + \
                                                         str(populationSize) + ".csv"
                                         generationNumberFilename = "generationNumber" + "Fitness" + str(
                                             fitnessFunction) + "TournomentSelection" + str(tournomentSelection) + \
                                                                    "mutationEnabled" + str(
                                             mutationenabled) + "mutationRate" + str(mutationRate) + "mrate" + str(
-                                            mrate) + "UniformCrossOver" + str(uniformCrossOver) + "populationSize" + \
+                                            mrate)+"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(uniformCrossOver) + "populationSize" + \
                                                                    str(populationSize) + ".csv"
                                         bestScoresFilename = "bestScores" + "Fitness" + str(
                                             fitnessFunction) + "TournomentSelection" + str(tournomentSelection) + \
                                                              "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                            mutationRate) + "mrate" + str(mrate) + "UniformCrossOver" + str(
+                                            mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+ "UniformCrossOver" + str(
                                             uniformCrossOver) + "populationSize" + \
                                                              str(populationSize) + ".csv"
                                         with open(timeFilename, 'w') as csvTimefile:
@@ -563,25 +563,25 @@ for fitnessFunctionindex in range(len(fitnessFunctionOption)):
                                     timeFilename = "time" + "Fitness" + str(fitnessFunction) + "TournomentSelection" + str(
                                         tournomentSelection) + \
                                                    "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                        mutationRate) + "mrate" + str(mrate) + "UniformCrossOver" + str(
+                                        mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
                                         uniformCrossOver) + "populationSize" + \
                                                    str(populationSize) + ".csv"
                                     scoreFilename = "score" + "Fitness" + str(fitnessFunction) + "TournomentSelection" + str(
                                         tournomentSelection) + \
                                                     "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                        mutationRate) + "mrate" + str(mrate) + "UniformCrossOver" + str(
+                                        mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
                                         uniformCrossOver) + "populationSize" + \
                                                     str(populationSize) + ".csv"
                                     generationNumberFilename = "generationNumber" + "Fitness" + str(
                                         fitnessFunction) + "TournomentSelection" + str(tournomentSelection) + \
                                                                "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                        mutationRate) + "mrate" + str(mrate) + "UniformCrossOver" + str(
+                                        mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
                                         uniformCrossOver) + "populationSize" + \
                                                                str(populationSize) + ".csv"
                                     bestScoresFilename = "bestScores" + "Fitness" + str(
                                         fitnessFunction) + "TournomentSelection" + str(tournomentSelection) + \
                                                          "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                        mutationRate) + "mrate" + str(mrate) + "UniformCrossOver" + str(
+                                        mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
                                         uniformCrossOver) + "populationSize" + \
                                                          str(populationSize) + ".csv"
                                     with open(timeFilename, 'w') as csvTimefile:
@@ -642,27 +642,27 @@ for fitnessFunctionindex in range(len(fitnessFunctionOption)):
                                 timeFilename = "./data/time" + "Fitness" + str(fitnessFunction) + "TournomentSelection" + str(
                                     tournomentSelection) + \
                                                "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                    mutationRate) + "mrate" + str(mrate) + "UniformCrossOver" + str(
+                                    mutationRate) + "mrate" + str(mrate)+"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
                                     uniformCrossOver) + "populationSize" + \
                                                str(populationSize) + ".csv"
                                 scoreFilename = "./data/score" + "Fitness" + str(
                                     fitnessFunction) + "TournomentSelection" + str(
                                     tournomentSelection) + \
                                                 "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                    mutationRate) + "mrate" + str(mrate) + "UniformCrossOver" + str(
+                                    mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+ "UniformCrossOver" + str(
                                     uniformCrossOver) + "populationSize" + \
                                                 str(populationSize) + ".csv"
                                 generationNumberFilename = "./data/generationNumber" + "Fitness" + str(
                                     fitnessFunction) + "TournomentSelection" + str(tournomentSelection) + \
                                                            "mutationEnabled" + str(
                                     mutationenabled) + "mutationRate" + str(
-                                    mutationRate) + "mrate" + str(mrate) + "UniformCrossOver" + str(
+                                    mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
                                     uniformCrossOver) + "populationSize" + \
                                                            str(populationSize) + ".csv"
                                 bestScoresFilename = "./data/bestScores" + "Fitness" + str(
                                     fitnessFunction) + "TournomentSelection" + str(tournomentSelection) + \
                                                      "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                    mutationRate) + "mrate" + str(mrate) + "UniformCrossOver" + str(
+                                    mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+ "UniformCrossOver" + str(
                                     uniformCrossOver) + "populationSize" + \
                                                      str(populationSize) + ".csv"
                                 with open(timeFilename, 'w') as csvTimefile:

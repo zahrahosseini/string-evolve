@@ -105,6 +105,30 @@ def selectParent(population, populationFitnessScores,initialPopulationSize,tourn
     tournamentWinner = tournamentFitnessScores.index(min(tournamentFitnessScores))
     return tournament[tournamentWinner]
 
+def selectParents(population, populationFitnessScores,initialPopulationSize,tournamentSize):
+
+    tournament1 = []
+    tournament2 = []
+    tournamentFitnessScores1 = []
+    tournamentFitnessScores2 = []
+    print(initialPopulationSize,tournamentSize)
+    randgenerated=random.sample(range(0, initialPopulationSize-1), 2*tournamentSize)
+    for i in range(0, tournamentSize):
+        selectedIndividualIndex=randgenerated[i]
+        tournament1.append(''.join(population[selectedIndividualIndex]))
+        tournamentFitnessScores1.append(populationFitnessScores[selectedIndividualIndex])
+
+    tournamentWinner1 = tournamentFitnessScores1.index(min(tournamentFitnessScores1))
+
+    for j in range(tournamentSize+1, 2*tournamentSize):
+        selectedIndividualIndex2=randgenerated[j]
+        tournament2.append(''.join(population[selectedIndividualIndex2]))
+        tournamentFitnessScores2.append(populationFitnessScores[selectedIndividualIndex2])
+
+    tournamentWinner2 = tournamentFitnessScores2.index(min(tournamentFitnessScores2))
+    return tournament1[tournamentWinner1],tournament2[tournamentWinner2]
+
+
 
 # selectedIndividualIndex = randint(0, initialPopulationSize - 1)
 
@@ -145,12 +169,17 @@ def selectSecondParent(population, populationFitnessScores, firstParent):
 
 def generateChild(population, populationFitnessScores,initialPopulationSize,uniformCrossOver,tournamentSize):
 
-    firstParent = list(selectParent(population, populationFitnessScores,initialPopulationSize,tournamentSize))
-    secondParent = list(selectParent(population, populationFitnessScores,initialPopulationSize,tournamentSize))
-
-    while firstParent == secondParent:
-        secondParent = list(selectParent(population, populationFitnessScores,initialPopulationSize,tournamentSize))
-
+    # firstParent = list(selectParent(population, populationFitnessScores,initialPopulationSize,tournamentSize))
+    # secondParent = list(selectParent(population, populationFitnessScores,initialPopulationSize,tournamentSize))
+    #
+    # print("First Selected", firstParent,secondParent)
+    # while firstParent == secondParent:
+    #     secondParent = list(selectParent(population, populationFitnessScores,initialPopulationSize,tournamentSize))
+    print("***%%%",tournamentSize)
+    firstParent1,secondParent2 =selectParents(population, populationFitnessScores, initialPopulationSize, tournamentSize)
+    firstParent=list(firstParent1)
+    secondParent=list(secondParent2)
+    print("Second Selected")
     child = copy.copy(secondParent)
     if (uniformCrossOver == 1):
         for j in range(genomeLength):
@@ -225,7 +254,7 @@ def generateNewPopulationTournomentSelection(population, populationFitnessScores
     for i in range(newChildSize):
         child=generateChild(population, populationFitnessScores,len(population),uniformCrossOver,tournamentSize)
         bestPopulation.append(child)
-    # print("XXXXXXX", len(bestPopulation))
+    print("XXXXXXX", len(bestPopulation))
     return bestPopulation
 
 def generateNewPopulation(population, populationFitnessScores,uniformCrossOver):
@@ -284,8 +313,10 @@ def mutate(population, numberOfMutation):
 
 
 def evolve(population,fitnessOption, tournomentSelection,mutationenabled,mutationRate,mrate,numberOfMutation,
-           initialPopulationSize, populationSize, newChildSize,uniformCrossOver,debug):
-
+           initialPopulationSize, populationSize, newChildSize,uniformCrossOver,tournamentSize,debug):
+    print("_______________________")
+    print(tournamentSize)
+    print("_______________________")
     numberOfGenerations = 1
 
     populationFitnessScores = populationFitnessTest(population,fitnessOption)
@@ -322,7 +353,13 @@ def evolve(population,fitnessOption, tournomentSelection,mutationenabled,mutatio
                     print(population[j], individualFitnessTestWithORD(population[j]))
                 else:
                     print (population[j], individualFitnessTest(population[j]))
-        # print ("_____First part_________")
+        print("Fitness" + str(fitnessFunction) + "TournomentSelection" + str(
+                                            tournomentSelection) + \
+                                                       "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
+                                            mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+ "UniformCrossOver" + str(
+                                            uniformCrossOver) + "populationSize" + \
+                                                       str(populationSize) )
+        print ("_____First part_________")
         top8=population[:8]
         if debug==1:
             for j in range(8):
@@ -342,10 +379,11 @@ def evolve(population,fitnessOption, tournomentSelection,mutationenabled,mutatio
             populationOutputFile.write('\n\n\n'.join(population))
             populationOutputFile.close()
             return ((mostFitMember)),population,numberOfGenerations
-        # print ("______After newPop________")
+        print ("______After newPop________")
         if tournomentSelection==0:
             population = generateNewPopulation(population, populationFitnessScores,uniformCrossOver)
         else:
+            print("Before generateNewPopulationTournomentSelection")
             population = generateNewPopulationTournomentSelection(population,populationFitnessScores,populationSize,uniformCrossOver,tournamentSize)
         if fitnessOption == 0:
             population.sort(key=individualFitnessTestWithORD, reverse=False)
@@ -357,7 +395,7 @@ def evolve(population,fitnessOption, tournomentSelection,mutationenabled,mutatio
                     print (population[j], individualFitnessTestWithORD(population[j]))
                 else:
                     print (population[j], individualFitnessTest(population[j]))
-        # print("-----------Mutate----------")
+        print("-----------Mutate----------")
         if mutationenabled==0:
             population=mutate(population, numberOfMutation)
         else:
@@ -412,34 +450,33 @@ fitnessFunctionOption=[0,1]
 tournomentSelectionOption=[0,1]
 mutationenabledOption=[0,1]
 uniformCrossOverOption=[0,1]
-tournamentSizeOption = [4,5,6]
-tournamentSize=5
-initialPopulationSizeOption=[16,32,512]
+tournamentSizeOption = [6,7,8]
+initialPopulationSizeOption=[32,128,512]
 mrateOptions=[0.9999,1,1.00001]
 mutationRate = 0.03
 mutationRateOptions=[0.02,0.03,0.04]
-debug=0
+debug=1
 for fitnessFunctionindex in range(len(fitnessFunctionOption)):
     for tournomentSelectionindex in range(len(tournomentSelectionOption)):
         for uniformCrossOverindex in range(len(uniformCrossOverOption)):
             for initialPopulationSizeindex in range(len(initialPopulationSizeOption)):
-                for mutationRateindex in range(len(mutationRateOptions)):
-                    for mutationenabledindex in range(len(mutationenabledOption)):
-                        mutationRate=mutationRateOptions[mutationRateindex]
-                        initialPopulationSize=initialPopulationSizeOption[initialPopulationSizeindex]
-                        uniformCrossOver=uniformCrossOverOption[uniformCrossOverindex]
-                        mutationenabled=mutationenabledOption[mutationenabledindex]
-                        tournomentSelection=tournomentSelectionOption[tournomentSelectionindex]
-                        fitnessFunction=fitnessFunctionOption[fitnessFunctionindex]
-                        if mutationenabled==1:
+                for mutationenabledindex in range(len(mutationenabledOption)):
+                    initialPopulationSize=initialPopulationSizeOption[initialPopulationSizeindex]
+                    uniformCrossOver=uniformCrossOverOption[uniformCrossOverindex]
+                    mutationenabled=mutationenabledOption[mutationenabledindex]
+                    tournomentSelection=tournomentSelectionOption[tournomentSelectionindex]
+                    fitnessFunction=fitnessFunctionOption[fitnessFunctionindex]
+                    if mutationenabled==1:
+                        for mutationRateindex in range(len(mutationRateOptions)):
                             for mrateindex in range(len(mrateOptions)):
-                                if tournomentSelectionindex==1:
+                                mutationRate = mutationRateOptions[mutationRateindex]
+                                mrate = mrateOptions[mrateindex]
+                                if tournomentSelection==1:
                                     for tournamentSizeindex in range(len(tournamentSizeOption)):
                                         ttime = []
                                         generation = []
                                         AllScores = []
                                         bestScores = []
-                                        mrate=mrateOptions[mrateindex]
                                         tournamentSize=tournamentSizeOption[tournamentSizeindex]
                                         for k in range(iterationCount):
                                             random.seed(k*7+11)
@@ -463,7 +500,7 @@ for fitnessFunctionindex in range(len(fitnessFunctionOption)):
                                                                                                         initialPopulationSize,
                                                                                                         populationSize,
                                                                                                         newChildSize,
-                                                                                                        uniformCrossOver,debug)
+                                                                                                        uniformCrossOver,tournamentSize,debug)
                                             timeTaken = str(round(default_timer() - startTime, 3))
                                             ttime.append(timeTaken)
                                             generation.append(generationNumber)
@@ -515,89 +552,12 @@ for fitnessFunctionindex in range(len(fitnessFunctionOption)):
                                         with open(bestScoresFilename, 'w') as csvBestScorefile:
                                             csvwriter = csv.writer(csvBestScorefile)
                                             csvwriter.writerow(bestScores)
-                        else:
-                            if tournomentSelectionindex==1:
-                                for tournamentSizeindex in range(len(tournamentSizeOption)):
-                                    tournamentSize = tournamentSizeOption[tournamentSizeindex]
-                                    ttime = []
-                                    generation = []
-                                    AllScores = []
-                                    bestScores = []
-                                    for k in range(iterationCount):
-                                        random.seed(k * 7 + 11)
-                                        startTime = default_timer()
-                                        scores = []
-
-                                        populationOutputFile = open("finalPopulation.txt", "w")
-                                        InitialPopulationOutputFile = open("initialPopulation.txt", "w")
-                                        populationSize = initialPopulationSize / 2  # 16
-                                        newChildSize = initialPopulationSize / 4
-                                        initialPopulation = generateInitialPopulation(initialPopulationSize)
-                                        InitialPopulationOutputFile.write('\n\n\n'.join(initialPopulation))
-                                        InitialPopulationOutputFile.close()
-
-                                        mostFittest, generatedPopulation, generationNumber = evolve(initialPopulation,
-                                                                                                    fitnessFunction,
-                                                                                                    tournomentSelection,
-                                                                                                    mutationenabled,
-                                                                                                    mutationRate, mrate,
-                                                                                                    numberOfMutation,
-                                                                                                    initialPopulationSize,
-                                                                                                    populationSize,
-                                                                                                    newChildSize,
-                                                                                                    uniformCrossOver,debug)
-                                        timeTaken = str(round(default_timer() - startTime, 3))
-                                        ttime.append(timeTaken)
-                                        generation.append(generationNumber)
-                                        if fitnessFunction == 0:
-                                            bestScores.append(individualFitnessTest(mostFittest))
-                                        else:
-                                            bestScores.append(individualFitnessTestWithORD(mostFittest))
-                                        if fitnessFunction == 0:
-                                            for iindex in range(len(generatedPopulation)):
-                                                scores.append(individualFitnessTest(generatedPopulation[iindex]))
-                                        else:
-                                            for iindex in range(len(generatedPopulation)):
-                                                scores.append(individualFitnessTestWithORD(generatedPopulation[iindex]))
-                                        AllScores.append(scores)
-                                    timeFilename = "time" + "Fitness" + str(fitnessFunction) + "TournomentSelection" + str(
-                                        tournomentSelection) + \
-                                                   "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                        mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
-                                        uniformCrossOver) + "populationSize" + \
-                                                   str(populationSize) + ".csv"
-                                    scoreFilename = "score" + "Fitness" + str(fitnessFunction) + "TournomentSelection" + str(
-                                        tournomentSelection) + \
-                                                    "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                        mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
-                                        uniformCrossOver) + "populationSize" + \
-                                                    str(populationSize) + ".csv"
-                                    generationNumberFilename = "generationNumber" + "Fitness" + str(
-                                        fitnessFunction) + "TournomentSelection" + str(tournomentSelection) + \
-                                                               "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                        mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
-                                        uniformCrossOver) + "populationSize" + \
-                                                               str(populationSize) + ".csv"
-                                    bestScoresFilename = "bestScores" + "Fitness" + str(
-                                        fitnessFunction) + "TournomentSelection" + str(tournomentSelection) + \
-                                                         "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                        mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
-                                        uniformCrossOver) + "populationSize" + \
-                                                         str(populationSize) + ".csv"
-                                    with open(timeFilename, 'w') as csvTimefile:
-                                        csvwriter = csv.writer(csvTimefile)
-                                        csvwriter.writerow(ttime)
-                                    with open(scoreFilename, 'w') as csvScoreAvgfile:
-                                        csvwriter = csv.writer(csvScoreAvgfile)
-                                        for sindex in range(len(AllScores)):
-                                            csvwriter.writerow(AllScores[sindex])
-                                    with open(generationNumberFilename, 'w') as csvGenerationfile:
-                                        csvwriter = csv.writer(csvGenerationfile)
-                                        csvwriter.writerow(generation)
-                                    with open(bestScoresFilename, 'w') as csvBestScorefile:
-                                        csvwriter = csv.writer(csvBestScorefile)
-                                        csvwriter.writerow(bestScores)
-                            else:
+                    else:
+                        print("MUtation not enabled")
+                        if tournomentSelection==1:
+                            for tournamentSizeindex in range(len(tournamentSizeOption)):
+                                tournamentSize = tournamentSizeOption[tournamentSizeindex]
+                                print("Tournoment before",tournamentSize)
                                 ttime = []
                                 generation = []
                                 AllScores = []
@@ -616,15 +576,15 @@ for fitnessFunctionindex in range(len(fitnessFunctionOption)):
                                     InitialPopulationOutputFile.close()
 
                                     mostFittest, generatedPopulation, generationNumber = evolve(initialPopulation,
-                                                                                                fitnessFunction,
-                                                                                                tournomentSelection,
-                                                                                                mutationenabled,
-                                                                                                mutationRate, mrate,
-                                                                                                numberOfMutation,
-                                                                                                initialPopulationSize,
-                                                                                                populationSize,
-                                                                                                newChildSize,
-                                                                                                uniformCrossOver, debug)
+                                                                                                    fitnessFunction,
+                                                                                                    tournomentSelection,
+                                                                                                    mutationenabled,
+                                                                                                    mutationRate, mrate,
+                                                                                                    numberOfMutation,
+                                                                                                    initialPopulationSize,
+                                                                                                    populationSize,
+                                                                                                    newChildSize,
+                                                                                                    uniformCrossOver,tournamentSize,debug)
                                     timeTaken = str(round(default_timer() - startTime, 3))
                                     ttime.append(timeTaken)
                                     generation.append(generationNumber)
@@ -639,32 +599,30 @@ for fitnessFunctionindex in range(len(fitnessFunctionOption)):
                                         for iindex in range(len(generatedPopulation)):
                                             scores.append(individualFitnessTestWithORD(generatedPopulation[iindex]))
                                     AllScores.append(scores)
-                                timeFilename = "./data/time" + "Fitness" + str(fitnessFunction) + "TournomentSelection" + str(
-                                    tournomentSelection) + \
-                                               "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                    mutationRate) + "mrate" + str(mrate)+"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
-                                    uniformCrossOver) + "populationSize" + \
-                                               str(populationSize) + ".csv"
-                                scoreFilename = "./data/score" + "Fitness" + str(
-                                    fitnessFunction) + "TournomentSelection" + str(
-                                    tournomentSelection) + \
-                                                "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                    mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+ "UniformCrossOver" + str(
-                                    uniformCrossOver) + "populationSize" + \
-                                                str(populationSize) + ".csv"
-                                generationNumberFilename = "./data/generationNumber" + "Fitness" + str(
-                                    fitnessFunction) + "TournomentSelection" + str(tournomentSelection) + \
-                                                           "mutationEnabled" + str(
-                                    mutationenabled) + "mutationRate" + str(
-                                    mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
-                                    uniformCrossOver) + "populationSize" + \
-                                                           str(populationSize) + ".csv"
-                                bestScoresFilename = "./data/bestScores" + "Fitness" + str(
-                                    fitnessFunction) + "TournomentSelection" + str(tournomentSelection) + \
-                                                     "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                    mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+ "UniformCrossOver" + str(
-                                    uniformCrossOver) + "populationSize" + \
-                                                     str(populationSize) + ".csv"
+                                timeFilename = "time" + "Fitness" + str(fitnessFunction) + "TournomentSelection" + str(
+                                        tournomentSelection) + \
+                                                   "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
+                                        mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
+                                        uniformCrossOver) + "populationSize" + \
+                                                   str(populationSize) + ".csv"
+                                scoreFilename = "score" + "Fitness" + str(fitnessFunction) + "TournomentSelection" + str(
+                                        tournomentSelection) + \
+                                                    "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
+                                        mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
+                                        uniformCrossOver) + "populationSize" + \
+                                                    str(populationSize) + ".csv"
+                                generationNumberFilename = "generationNumber" + "Fitness" + str(
+                                        fitnessFunction) + "TournomentSelection" + str(tournomentSelection) + \
+                                                               "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
+                                        mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
+                                        uniformCrossOver) + "populationSize" + \
+                                                               str(populationSize) + ".csv"
+                                bestScoresFilename = "bestScores" + "Fitness" + str(
+                                        fitnessFunction) + "TournomentSelection" + str(tournomentSelection) + \
+                                                         "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
+                                        mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+  "UniformCrossOver" + str(
+                                        uniformCrossOver) + "populationSize" + \
+                                                         str(populationSize) + ".csv"
                                 with open(timeFilename, 'w') as csvTimefile:
                                     csvwriter = csv.writer(csvTimefile)
                                     csvwriter.writerow(ttime)
@@ -678,6 +636,85 @@ for fitnessFunctionindex in range(len(fitnessFunctionOption)):
                                 with open(bestScoresFilename, 'w') as csvBestScorefile:
                                     csvwriter = csv.writer(csvBestScorefile)
                                     csvwriter.writerow(bestScores)
+                        else:
+                            for k in range(iterationCount):
+                                random.seed(k * 7 + 11)
+                                startTime = default_timer()
+                                scores = []
+
+                                populationOutputFile = open("finalPopulation.txt", "w")
+                                InitialPopulationOutputFile = open("initialPopulation.txt", "w")
+                                populationSize = initialPopulationSize / 2  # 16
+                                newChildSize = initialPopulationSize / 4
+                                initialPopulation = generateInitialPopulation(initialPopulationSize)
+                                InitialPopulationOutputFile.write('\n\n\n'.join(initialPopulation))
+                                InitialPopulationOutputFile.close()
+
+                                mostFittest, generatedPopulation, generationNumber = evolve(initialPopulation,
+                                                                                            fitnessFunction,
+                                                                                            tournomentSelection,
+                                                                                            mutationenabled,
+                                                                                            mutationRate, mrate,
+                                                                                            numberOfMutation,
+                                                                                            initialPopulationSize,
+                                                                                            populationSize,
+                                                                                            newChildSize,
+                                                                                            uniformCrossOver,tournamentSize, debug)
+                                timeTaken = str(round(default_timer() - startTime, 3))
+                                ttime.append(timeTaken)
+                                generation.append(generationNumber)
+                                if fitnessFunction == 0:
+                                    bestScores.append(individualFitnessTest(mostFittest))
+                                else:
+                                    bestScores.append(individualFitnessTestWithORD(mostFittest))
+                                if fitnessFunction == 0:
+                                    for iindex in range(len(generatedPopulation)):
+                                        scores.append(individualFitnessTest(generatedPopulation[iindex]))
+                                else:
+                                    for iindex in range(len(generatedPopulation)):
+                                        scores.append(individualFitnessTestWithORD(generatedPopulation[iindex]))
+                                AllScores.append(scores)
+                            timeFilename = "time" + "Fitness" + str(fitnessFunction) + "TournomentSelection" + str(
+                                tournomentSelection) + \
+                                           "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
+                                mutationRate) + "mrate" + str(mrate) + "tournamentSize" + str(
+                                tournamentSize) + "UniformCrossOver" + str(
+                                uniformCrossOver) + "populationSize" + \
+                                           str(populationSize) + ".csv"
+                            scoreFilename = "score" + "Fitness" + str(fitnessFunction) + "TournomentSelection" + str(
+                                tournomentSelection) + \
+                                            "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
+                                mutationRate) + "mrate" + str(mrate) + "tournamentSize" + str(
+                                tournamentSize) + "UniformCrossOver" + str(
+                                uniformCrossOver) + "populationSize" + \
+                                            str(populationSize) + ".csv"
+                            generationNumberFilename = "generationNumber" + "Fitness" + str(
+                                fitnessFunction) + "TournomentSelection" + str(tournomentSelection) + \
+                                                       "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
+                                mutationRate) + "mrate" + str(mrate) + "tournamentSize" + str(
+                                tournamentSize) + "UniformCrossOver" + str(
+                                uniformCrossOver) + "populationSize" + \
+                                                       str(populationSize) + ".csv"
+                            bestScoresFilename = "bestScores" + "Fitness" + str(
+                                fitnessFunction) + "TournomentSelection" + str(tournomentSelection) + \
+                                                 "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
+                                mutationRate) + "mrate" + str(mrate) + "tournamentSize" + str(
+                                tournamentSize) + "UniformCrossOver" + str(
+                                uniformCrossOver) + "populationSize" + \
+                                                 str(populationSize) + ".csv"
+                            with open(timeFilename, 'w') as csvTimefile:
+                                csvwriter = csv.writer(csvTimefile)
+                                csvwriter.writerow(ttime)
+                            with open(scoreFilename, 'w') as csvScoreAvgfile:
+                                csvwriter = csv.writer(csvScoreAvgfile)
+                                for sindex in range(len(AllScores)):
+                                    csvwriter.writerow(AllScores[sindex])
+                            with open(generationNumberFilename, 'w') as csvGenerationfile:
+                                csvwriter = csv.writer(csvGenerationfile)
+                                csvwriter.writerow(generation)
+                            with open(bestScoresFilename, 'w') as csvBestScorefile:
+                                csvwriter = csv.writer(csvBestScorefile)
+                                csvwriter.writerow(bestScores)
 
 
 

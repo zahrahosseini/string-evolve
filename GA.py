@@ -111,7 +111,7 @@ def selectParents(population, populationFitnessScores,initialPopulationSize,tour
     tournament2 = []
     tournamentFitnessScores1 = []
     tournamentFitnessScores2 = []
-    print(initialPopulationSize,tournamentSize)
+    #print(initialPopulationSize,tournamentSize)
     randgenerated=random.sample(range(0, initialPopulationSize-1), 2*tournamentSize)
     for i in range(0, tournamentSize):
         selectedIndividualIndex=randgenerated[i]
@@ -175,11 +175,11 @@ def generateChild(population, populationFitnessScores,initialPopulationSize,unif
     # print("First Selected", firstParent,secondParent)
     # while firstParent == secondParent:
     #     secondParent = list(selectParent(population, populationFitnessScores,initialPopulationSize,tournamentSize))
-    print("***%%%",tournamentSize)
+    #print("***%%%",tournamentSize)
     firstParent1,secondParent2 =selectParents(population, populationFitnessScores, initialPopulationSize, tournamentSize)
     firstParent=list(firstParent1)
     secondParent=list(secondParent2)
-    print("Second Selected")
+    #print("Second Selected")
     child = copy.copy(secondParent)
     if (uniformCrossOver == 1):
         for j in range(genomeLength):
@@ -254,7 +254,7 @@ def generateNewPopulationTournomentSelection(population, populationFitnessScores
     for i in range(newChildSize):
         child=generateChild(population, populationFitnessScores,len(population),uniformCrossOver,tournamentSize)
         bestPopulation.append(child)
-    print("XXXXXXX", len(bestPopulation))
+    #print("XXXXXXX", len(bestPopulation))
     return bestPopulation
 
 def generateNewPopulation(population, populationFitnessScores,uniformCrossOver):
@@ -438,7 +438,7 @@ ttime=[]
 generation=[]
 AllScores=[]
 bestScores=[]
-iterationCount=10
+iterationCount=20
 
 fitnessFunction=0
 tournomentSelection=0
@@ -455,7 +455,7 @@ initialPopulationSizeOption=[32,128,512]
 mrateOptions=[0.9999,1,1.00001]
 mutationRate = 0.03
 mutationRateOptions=[0.02,0.03,0.04]
-debug=1
+debug=0
 for fitnessFunctionindex in range(len(fitnessFunctionOption)):
     for tournomentSelectionindex in range(len(tournomentSelectionOption)):
         for uniformCrossOverindex in range(len(uniformCrossOverOption)):

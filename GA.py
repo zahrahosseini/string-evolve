@@ -353,13 +353,13 @@ def evolve(population,fitnessOption, tournomentSelection,mutationenabled,mutatio
                     print(population[j], individualFitnessTestWithORD(population[j]))
                 else:
                     print (population[j], individualFitnessTest(population[j]))
-        print("Fitness" + str(fitnessFunction) + "TournomentSelection" + str(
-                                            tournomentSelection) + \
-                                                       "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
-                                            mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+ "UniformCrossOver" + str(
-                                            uniformCrossOver) + "populationSize" + \
-                                                       str(populationSize) )
-        print ("_____First part_________")
+        # print("Fitness" + str(fitnessFunction) + "TournomentSelection" + str(
+        #                                     tournomentSelection) + \
+        #                                                "mutationEnabled" + str(mutationenabled) + "mutationRate" + str(
+        #                                     mutationRate) + "mrate" + str(mrate) +"tournamentSize"+str(tournamentSize)+ "UniformCrossOver" + str(
+        #                                     uniformCrossOver) + "populationSize" + \
+        #                                                str(populationSize) )
+        #print ("_____First part_________")
         top8=population[:8]
         if debug==1:
             for j in range(8):
@@ -379,11 +379,11 @@ def evolve(population,fitnessOption, tournomentSelection,mutationenabled,mutatio
             populationOutputFile.write('\n\n\n'.join(population))
             populationOutputFile.close()
             return ((mostFitMember)),population,numberOfGenerations
-        print ("______After newPop________")
+        #print ("______After newPop________")
         if tournomentSelection==0:
             population = generateNewPopulation(population, populationFitnessScores,uniformCrossOver)
         else:
-            print("Before generateNewPopulationTournomentSelection")
+            #print("Before generateNewPopulationTournomentSelection")
             population = generateNewPopulationTournomentSelection(population,populationFitnessScores,populationSize,uniformCrossOver,tournamentSize)
         if fitnessOption == 0:
             population.sort(key=individualFitnessTestWithORD, reverse=False)
@@ -395,7 +395,7 @@ def evolve(population,fitnessOption, tournomentSelection,mutationenabled,mutatio
                     print (population[j], individualFitnessTestWithORD(population[j]))
                 else:
                     print (population[j], individualFitnessTest(population[j]))
-        print("-----------Mutate----------")
+        #print("-----------Mutate----------")
         if mutationenabled==0:
             population=mutate(population, numberOfMutation)
         else:
@@ -450,7 +450,7 @@ fitnessFunctionOption=[0,1]
 tournomentSelectionOption=[0,1]
 mutationenabledOption=[0,1]
 uniformCrossOverOption=[0,1]
-tournamentSizeOption = [6,7,8]
+tournamentSizeOption = [5,6,7]
 initialPopulationSizeOption=[32,128,512]
 mrateOptions=[0.9999,1,1.00001]
 mutationRate = 0.03
